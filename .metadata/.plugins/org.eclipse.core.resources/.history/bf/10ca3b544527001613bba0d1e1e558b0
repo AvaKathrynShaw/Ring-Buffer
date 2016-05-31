@@ -3,10 +3,6 @@ package mainApp;
 import mainApp.Buffer;
 
 
-/***************
-@author Ava Shaw
-***************/
-
 public class Main{
 	
 	
@@ -21,6 +17,7 @@ public class Main{
 		    System.out.println(Buffer.write(test2));
 		    System.out.println(Buffer.write(test3));
 			
+		   /* System.out.println(Buffer.read());
 		    System.out.println(Buffer.read());
 		    System.out.println(Buffer.read());
 		    System.out.println(Buffer.read());
@@ -28,8 +25,7 @@ public class Main{
 		    System.out.println(Buffer.read());
 		    System.out.println(Buffer.read());
 		    System.out.println(Buffer.read());
-		    System.out.println(Buffer.read());
-		    System.out.println(Buffer.read());
+		    System.out.println(Buffer.read());*/
 		    
 		
 		

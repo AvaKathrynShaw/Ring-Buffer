@@ -13,11 +13,18 @@ public class Buffer {
 	    public static int capacity  = 6;
 	    public static int writePos  = 0;
 	    public static int available = 6;
-	    public static int FIFOPos = 0;
 	    
 	    public static boolean[] isOccupied = {false, false, false, false, false, false};
 
+	    public int remainingCapacity() {
+	        return Buffer.capacity - Buffer.available;
+	    }
+
 	    public static int write(int[] newElements){
+	        return put(newElements, newElements.length);
+	    }
+	    
+	    public static int put(int[] newElements, int length){
 	    	
 	    	//sets read position in array newElements
 	    	int readPos = 0;
@@ -75,36 +82,10 @@ public class Buffer {
 		//returns a single buffered int in FIFO order and 
 		//removes the element from the buffer
 		public static int read(){
-			
-			if(available ==6){
-				return 0;
-			}else
-				
-			//return elements[Buffer.FIFOPos];
-			
-			//increment the FIFO position of buffer in circular fashion
-			//if the FIFO position in the array is the size of the 
-			//capacity less one return to 0
-				
-			if(Buffer.FIFOPos==capacity-1){
-				Buffer.FIFOPos=0;
-				return elements[Buffer.capacity-1];
-				
-			}else{
-				//otherwise just increment the write position until we hit the above condition
-				Buffer.FIFOPos++;
-				return elements[Buffer.FIFOPos-1];
-				
-			}
-			
-			}
-			
-			
+			return 0;
 		}
 		
 		
 		
-		
-		
-	
+	}
 
