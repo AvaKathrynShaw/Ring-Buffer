@@ -80,7 +80,6 @@ public class Buffer {
 			int retValue;
 			
 			if(available ==6){
-				System.out.print("Null");
 				return 0;
 			}else
 				
