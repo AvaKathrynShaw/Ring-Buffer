@@ -108,11 +108,11 @@ public class Buffer {
 				
 			}else{
 				//otherwise just increment the write position until we hit the above condition
-				retValue = elements[Buffer.FIFOPos];
+				retValue = elements[Buffer.FIFOPos-1];
 				//clear the buffer element value
-				elements[Buffer.FIFOPos]=0;
+				elements[Buffer.FIFOPos-1]=0;
 				//set the space to unoccupied again
-				isOccupied[Buffer.FIFOPos]=false;
+				isOccupied[capacity-1]=false;
 				//add to the number of available spaces again
 				Buffer.available++;
 				//Update FIFOPos				

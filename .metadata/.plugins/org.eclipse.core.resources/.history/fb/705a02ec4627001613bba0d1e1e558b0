@@ -16,7 +16,6 @@ public class Buffer {
 	    public static int FIFOPos = 0;
 	    
 	    public static boolean[] isOccupied = {false, false, false, false, false, false};
-	    
 
 	    public static int write(int[] newElements){
 	    	
@@ -77,8 +76,6 @@ public class Buffer {
 		//removes the element from the buffer
 		public static int read(){
 			
-			int retValue;
-			
 			if(available ==6){
 				return 0;
 			}else
@@ -90,40 +87,15 @@ public class Buffer {
 			//capacity less one return to 0
 				
 			if(Buffer.FIFOPos==capacity-1){
-				
-				//we were at the end of the buffer to we return to 0 postion
 				Buffer.FIFOPos=0;
-				//we set the value in the buffer to retValue
-				retValue= elements[Buffer.capacity-1];
-				//clear the buffer element value
-				elements[Buffer.capacity-1]=0;
-				//set the space to unoccupied again
-				isOccupied[capacity-1]=false;
-				//add to the number of available spaces again
-				Buffer.available++;
-				
-				
-				return retValue;
-				
+				return elements[Buffer.capacity-1];
 				
 			}else{
 				//otherwise just increment the write position until we hit the above condition
-				retValue = elements[Buffer.FIFOPos];
-				//clear the buffer element value
-				elements[Buffer.FIFOPos]=0;
-				//set the space to unoccupied again
-				isOccupied[Buffer.FIFOPos]=false;
-				//add to the number of available spaces again
-				Buffer.available++;
-				//Update FIFOPos				
 				Buffer.FIFOPos++;
+				return elements[Buffer.FIFOPos-1];
 				
-				
-				return retValue;
-				
-				
-				
-				}
+			}
 			
 			}
 			
