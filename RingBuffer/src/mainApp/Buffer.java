@@ -1,0 +1,91 @@
+package mainApp;
+
+
+/***************
+@author Ava Shaw
+***************/
+
+public class Buffer {
+	
+	//TO CHANGE BUFFER SIZE EDIT INT[] ELEMENTS; CAPACITY, AND BOOLEAN[] ISOCCUPIED; AND AVAILABLE//
+	   public static int[] elements = {0,0,0,0,0,0};
+
+	    public static int capacity  = 6;
+	    public static int writePos  = 0;
+	    public static int available = 6;
+	    
+	    public static boolean[] isOccupied = {false, false, false, false, false, false};
+
+	    public int remainingCapacity() {
+	        return Buffer.capacity - Buffer.available;
+	    }
+
+	    public static int write(int[] newElements){
+	        return put(newElements, newElements.length);
+	    }
+	    
+	    public static int put(int[] newElements, int length){
+	    	
+	    	//sets read position in array newElements
+	    	int readPos = 0;
+	    	//number to be returned as number of elements added to buffer
+	    	int numElements = 0;
+	    	
+	    	//if there aren't any spaces available we can't insert anything
+	    	if (Buffer.available == 0){
+	    		return 0;
+	    	}
+	    	//iterate through element list
+	    	for(int i=0; i<=capacity-1 && i<=newElements.length-1; i++ ){
+	    		//check if there are any spots available
+	    		if(Buffer.available==0){
+	    			//if not return the number of elements
+	    			return numElements;
+	    		}
+	    		//else check if the next space is empty
+	    		if(isOccupied[Buffer.writePos]!=true){
+	    			//since it's not write the new int into the empty buffer space
+	    			elements[Buffer.writePos]=newElements[readPos];
+	    			//mark the space occupied
+	    			isOccupied[Buffer.writePos]=true;
+	    			//advance the read position in incoming array
+	    			readPos++;
+	    			//decrement number of available spaces
+	    			Buffer.available--;
+	    			//add to number of elements added to buffer
+	    			numElements++;
+	    			
+	    			//increment the write position of buffer in circular fashion
+	    			//if the write position in the array is the size of the 
+	    			//capacity less one return to 0
+	    			if(Buffer.writePos==capacity-1){
+	    				Buffer.writePos=0;
+	    				
+	    			}else{
+	    				//otherwise just increment the write position until we hit the above condition
+	    				Buffer.writePos++;
+	    			}
+	    			
+	    			
+	    		}
+	    		
+	    	}
+	    	
+	    	return numElements;
+	    	
+	    	
+	    	
+	    }
+	    
+
+
+		//returns a single buffered int in FIFO order and 
+		//removes the element from the buffer
+		public static int read(){
+			return 0;
+		}
+		
+		
+		
+	}
+

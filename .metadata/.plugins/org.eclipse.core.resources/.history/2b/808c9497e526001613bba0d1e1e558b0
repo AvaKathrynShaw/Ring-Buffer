@@ -1,0 +1,326 @@
+package mainApp;
+
+
+/***************
+@author Ava Shaw
+***************/
+
+public class Buffer {
+	
+
+	/*  public static int[] elements = {0,0,0,0,0,0};
+
+	    public static int capacity  = 6;
+	    public static int writePos  = 0;
+	    public static int available = 0;
+
+	    public int remainingCapacity() {
+	        return Buffer.capacity - Buffer.available;
+	    }
+	    
+	    public void reset() {
+	        Buffer.writePos = 0;
+	        Buffer.available = 0;
+	    }
+
+	    public static int write(int[] newElements){
+	        return write(newElements, newElements.length);
+	    }
+
+	    public static int write(int[] newElements, int length){
+	    	//set read position to 0
+	        int readPos = 0;
+	        //number of items inserted into the array
+	       // int numElements = 0;
+	        //check if the write position is greater than available
+	        if(Buffer.writePos > Buffer.available){
+	            //space above writePos is all empty
+
+	            if(length <= Buffer.capacity - Buffer.writePos){
+	                //space above writePos is sufficient to insert batch
+
+	                for(;  readPos < length; readPos++){
+	                    Buffer.elements[Buffer.writePos++] = newElements[readPos];
+	                }
+	                Buffer.available += readPos;
+	                return length;
+
+	            } else {
+	                //both space above writePos and below writePos is necessary to use
+	                //to insert batch.
+
+	                int lastEmptyPos = writePos - available;
+
+	                for(; Buffer.writePos < Buffer.capacity; Buffer.writePos++){
+	                    Buffer.elements[Buffer.writePos] = newElements[readPos++];
+	                }
+
+	                //fill into bottom of array too.
+	                Buffer.writePos = 0;
+
+	                int endPos = Math.min(length - readPos, capacity - available - readPos);
+	                for(;Buffer.writePos < endPos; Buffer.writePos++){
+	                    Buffer.elements[Buffer.writePos] = newElements[readPos++];
+	                }
+	                Buffer.available += readPos;
+	                return readPos;
+	            }
+	        } else {
+	            int endPos = Buffer.capacity - Buffer.available + Buffer.writePos;
+
+	            for(; Buffer.writePos < endPos; Buffer.writePos++){
+	                Buffer.elements[Buffer.writePos] = newElements[readPos++];
+	            }
+	            Buffer.available += readPos;
+
+	            return readPos;
+	        }
+
+	    }
+
+
+	    @SuppressWarnings("null")
+		public static int read() {
+	        if(available == 0){
+	            return (Integer) null;
+	        }
+	        int nextSlot = writePos - available;
+	        if(nextSlot < 0){
+	            nextSlot += capacity;
+	        }
+	        Object nextObj = elements[nextSlot];
+	        available--;
+	        return (Integer)nextObj;
+	    }
+
+
+	    public int take(Object[] into){
+	        return take(into, into.length);
+	    }
+
+
+	    public int take(Object[] into, int length){
+	        int intoPos = 0;
+
+	        if(available <= writePos){
+	            int nextPos= writePos - available;
+	            int endPos   = nextPos + Math.min(available, length);
+
+	            for(;nextPos < endPos; nextPos++){
+	                into[intoPos++] = Buffer.elements[nextPos];
+	            }
+	            Buffer.available -= intoPos;
+	            return intoPos;
+	        } else {
+	            int nextPos = writePos - available + capacity;
+
+	            int leftInTop = capacity - nextPos;
+	            if(length <= leftInTop){
+	                //copy directly
+	                for(; intoPos < length; intoPos++){
+	                    into[intoPos] = Buffer.elements[nextPos++];
+	                }
+	                Buffer.available -= length;
+	                return length;
+
+	            } else {
+	                //copy top
+	                for(; nextPos < capacity; nextPos++){
+	                    into[intoPos++] = Buffer.elements[nextPos];
+	                }
+
+	                //copy bottom - from 0 to writePos
+	                nextPos = 0;
+	                int leftToCopy = length - intoPos;
+	                int endPos = Math.min(writePos, leftToCopy);
+
+	                for(;nextPos < endPos; nextPos++){
+	                    into[intoPos++] = Buffer.elements[nextPos];
+	                }
+
+	                Buffer.available -= intoPos;
+
+	                return intoPos;
+	            }
+	        }
+	    }
+	}
+
+*/
+
+    public static Object[] elements = null;
+
+    public static int capacity = 0;
+    public static int writePos = 0;
+    public static int readPos  = 0;
+    public static boolean flipped = false;
+
+    public Buffer(int capacity) {
+        Buffer.capacity = capacity;
+        Buffer.elements = new Object[capacity];
+    }
+
+    public void reset() {
+        Buffer.writePos = 0;
+        Buffer.readPos  = 0;
+        Buffer.flipped  = false;
+    }
+
+    public int available() {
+        if(!flipped){
+            return writePos - readPos;
+        }
+        return capacity - readPos + writePos;
+    }
+
+    public int remainingCapacity() {
+        if(!flipped){
+            return capacity - writePos;
+        }
+        return readPos - writePos;
+    }
+
+  /*  public boolean put(Object element){
+        if(!flipped){
+            if(writePos == capacity){
+                writePos = 0;
+                flipped = true;
+
+                if(writePos < readPos){
+                    elements[writePos++] = element;
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                elements[writePos++] = element;
+                return true;
+            }
+        } else {
+            if(writePos < readPos ){
+                elements[writePos++] = element;
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+*/
+    public static int write(int[] test2){
+    	int length=test2.length;
+        int newElementsReadPos = 0;
+        if(!flipped){
+            //readPos lower than writePos - free sections are:
+            //1) from writePos to capacity
+            //2) from 0 to readPos
+
+            if(length <= capacity - writePos){
+                //new elements fit into top of elements array - copy directly
+                for(; newElementsReadPos < length; newElementsReadPos++){
+                    Buffer.elements[Buffer.writePos++] = test2[newElementsReadPos];
+                }
+
+                return newElementsReadPos;
+            } else {
+                //new elements must be divided between top and bottom of elements array
+
+                //writing to top
+                for(;Buffer.writePos < capacity; Buffer.writePos++){
+                	Buffer.elements[Buffer.writePos] = test2[newElementsReadPos++];
+                }
+
+                //writing to bottom
+                Buffer.writePos = 0;
+                Buffer.flipped  = true;
+                int endPos = Math.min(Buffer.readPos, length - newElementsReadPos);
+                for(; Buffer.writePos < endPos; Buffer.writePos++){
+                	Buffer.elements[writePos] = test2[newElementsReadPos++];
+                }
+
+
+                return newElementsReadPos;
+            }
+
+        } else {
+            //readPos higher than writePos - free sections are:
+            //1) from writePos to readPos
+
+            int endPos = Math.min(Buffer.readPos, Buffer.writePos + length);
+
+            for(; Buffer.writePos < endPos; Buffer.writePos++){
+            	Buffer.elements[Buffer.writePos] = test2[newElementsReadPos++];
+            }
+
+            return newElementsReadPos;
+        }
+    }
+
+
+    public static Object read() {
+        if(!flipped){
+            if(readPos < writePos){
+                return elements[readPos++];
+            } else {
+                return null;
+            }
+        } else {
+            if(readPos == capacity){
+                readPos = 0;
+                flipped = false;
+
+                if(readPos < writePos){
+                    return elements[readPos++];
+                } else {
+                    return null;
+                }
+            } else {
+                return elements[readPos++];
+            }
+        }
+    }
+
+    public int take(Object[] into, int length){
+        int intoWritePos = 0;
+        if(!flipped){
+            //writePos higher than readPos - available section is writePos - readPos
+
+            int endPos = Math.min(Buffer.writePos, Buffer.readPos + length);
+            for(; Buffer.readPos < endPos; Buffer.readPos++){
+                into[intoWritePos++] = this.elements[Buffer.readPos];
+            }
+            return intoWritePos;
+        } else {
+            //readPos higher than writePos - available sections are
+            //top + bottom of elements array
+
+            if(length <= capacity - readPos){
+                //length is lower than the elements available at the top
+                //of the elements array - copy directly
+                for(; intoWritePos < length; intoWritePos++){
+                    into[intoWritePos] = this.elements[Buffer.readPos++];
+                }
+
+                return intoWritePos;
+            } else {
+                //length is higher than elements available at the top of the elements array
+                //split copy into a copy from both top and bottom of elements array.
+
+                //copy from top
+                for(; Buffer.readPos < capacity; Buffer.readPos++){
+                    into[intoWritePos++] = this.elements[Buffer.readPos];
+                }
+
+                //copy from bottom
+                Buffer.readPos = 0;
+                Buffer.flipped = false;
+                int endPos = Math.min(Buffer.writePos, length - intoWritePos);
+                for(; Buffer.readPos < endPos; Buffer.readPos++){
+                    into[intoWritePos++] = this.elements[Buffer.readPos];
+                }
+
+                return intoWritePos;
+            }
+        }
+    }
+}
+

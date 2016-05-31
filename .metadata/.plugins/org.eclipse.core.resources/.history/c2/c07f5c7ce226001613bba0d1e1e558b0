@@ -1,0 +1,144 @@
+package mainApp;
+
+
+/***************
+@author Ava Shaw
+***************/
+
+public class Buffer {
+	
+
+	  public static int[] elements = {0,0,0,0,0,0};
+
+	    public static int capacity  = 6;
+	    public static int writePos  = 0;
+	    public static int available = 6;
+
+	    public int remainingCapacity() {
+	        return Buffer.capacity - Buffer.available;
+	    }
+	    
+	    public void reset() {
+	        Buffer.writePos = 0;
+	        Buffer.available = 0;
+	    }
+
+	    public static int write(int[] newElements){
+	        return write(newElements, newElements.length);
+	    }
+
+	    public static int write(int[] newElements, int length){
+	        int readPos = 0;
+	        if(Buffer.writePos > Buffer.available){
+	            //space above writePos is all empty
+
+	            if(length <= Buffer.capacity - Buffer.writePos){
+	                //space above writePos is sufficient to insert batch
+
+	                for(;  readPos < length; readPos++){
+	                    Buffer.elements[Buffer.writePos++] = newElements[readPos];
+	                }
+	                Buffer.available += readPos;
+	                return length;
+
+	            } else {
+	                //both space above writePos and below writePos is necessary to use
+	                //to insert batch.
+
+	                int lastEmptyPos = writePos - available;
+
+	                for(; Buffer.writePos < Buffer.capacity; Buffer.writePos++){
+	                    Buffer.elements[Buffer.writePos] = newElements[readPos++];
+	                }
+
+	                //fill into bottom of array too.
+	                Buffer.writePos = 0;
+
+	                int endPos = Math.min(length - readPos, capacity - available - readPos);
+	                for(;Buffer.writePos < endPos; Buffer.writePos++){
+	                    Buffer.elements[Buffer.writePos] = newElements[readPos++];
+	                }
+	                Buffer.available += readPos;
+	                return readPos;
+	            }
+	        } else {
+	            int endPos = Buffer.capacity - Buffer.available + Buffer.writePos;
+
+	            for(; Buffer.writePos < endPos; Buffer.writePos++){
+	                Buffer.elements[Buffer.writePos] = newElements[readPos++];
+	            }
+	            Buffer.available += readPos;
+
+	            return readPos;
+	        }
+
+	    }
+
+
+	    @SuppressWarnings("null")
+		public static int read() {
+	        if(available == 0){
+	            return (Integer) null;
+	        }
+	        int nextSlot = writePos - available;
+	        if(nextSlot < 0){
+	            nextSlot += capacity;
+	        }
+	        Object nextObj = elements[nextSlot];
+	        available--;
+	        return (Integer)nextObj;
+	    }
+
+
+	    public int take(Object[] into){
+	        return take(into, into.length);
+	    }
+
+
+	    public int take(Object[] into, int length){
+	        int intoPos = 0;
+
+	        if(available <= writePos){
+	            int nextPos= writePos - available;
+	            int endPos   = nextPos + Math.min(available, length);
+
+	            for(;nextPos < endPos; nextPos++){
+	                into[intoPos++] = Buffer.elements[nextPos];
+	            }
+	            Buffer.available -= intoPos;
+	            return intoPos;
+	        } else {
+	            int nextPos = writePos - available + capacity;
+
+	            int leftInTop = capacity - nextPos;
+	            if(length <= leftInTop){
+	                //copy directly
+	                for(; intoPos < length; intoPos++){
+	                    into[intoPos] = Buffer.elements[nextPos++];
+	                }
+	                Buffer.available -= length;
+	                return length;
+
+	            } else {
+	                //copy top
+	                for(; nextPos < capacity; nextPos++){
+	                    into[intoPos++] = Buffer.elements[nextPos];
+	                }
+
+	                //copy bottom - from 0 to writePos
+	                nextPos = 0;
+	                int leftToCopy = length - intoPos;
+	                int endPos = Math.min(writePos, leftToCopy);
+
+	                for(;nextPos < endPos; nextPos++){
+	                    into[intoPos++] = Buffer.elements[nextPos];
+	                }
+
+	                Buffer.available -= intoPos;
+
+	                return intoPos;
+	            }
+	        }
+	    }
+	}
+

@@ -1,0 +1,262 @@
+package mainApp;
+/***************
+@author Ava Shaw
+***************/
+
+public class Main {
+	
+	  public Object[] elements = null;
+
+	    public int capacity  = 0;
+	    public int writePos  = 0;
+	    public int available = 0;
+
+	    public void QueueFillCount(int capacity) {
+	        this.capacity = capacity;
+	        this.elements = new Object[capacity];
+	    }
+
+	    public void reset() {
+	        this.writePos = 0;
+	        this.available = 0;
+	    }
+
+	    public int remainingCapacity() {
+	        return this.capacity - this.available;
+	    }
+
+
+
+	    public boolean put(Object element){
+
+	        if(available < capacity){
+	            if(writePos >= capacity){
+	                writePos = 0;
+	            }
+	            elements[writePos] = element;
+	            writePos++;
+	            available++;
+	            return true;
+	        }
+
+	        return false;
+	    }
+
+	    public int put(Object[] newElements){
+	        return put(newElements, newElements.length);
+	    }
+
+	    public int put(Object[] newElements, int length){
+	        int readPos = 0;
+	        if(this.writePos > this.available){
+	            //space above writePos is all empty
+
+	            if(length <= this.capacity - this.writePos){
+	                //space above writePos is sufficient to insert batch
+
+	                for(;  readPos < length; readPos++){
+	                    this.elements[this.writePos++] = newElements[readPos];
+	                }
+	                this.available += readPos;
+	                return length;
+
+	            } else {
+	                //both space above writePos and below writePos is necessary to use
+	                //to insert batch.
+
+	                int lastEmptyPos = writePos - available;
+
+	                for(; this.writePos < this.capacity; this.writePos++){
+	                    this.elements[this.writePos] = newElements[readPos++];
+	                }
+
+	                //fill into bottom of array too.
+	                this.writePos = 0;
+
+	                int endPos = Math.min(length - readPos, capacity - available - readPos);
+	                for(;this.writePos < endPos; this.writePos++){
+	                    this.elements[this.writePos] = newElements[readPos++];
+	                }
+	                this.available += readPos;
+	                return readPos;
+	            }
+	        } else {
+	            int endPos = this.capacity - this.available + this.writePos;
+
+	            for(; this.writePos < endPos; this.writePos++){
+	                this.elements[this.writePos] = newElements[readPos++];
+	            }
+	            this.available += readPos;
+
+	            return readPos;
+	        }
+
+	    }
+
+
+	    public Object take() {
+	        if(available == 0){
+	            return null;
+	        }
+	        int nextSlot = writePos - available;
+	        if(nextSlot < 0){
+	            nextSlot += capacity;
+	        }
+	        Object nextObj = elements[nextSlot];
+	        available--;
+	        return nextObj;
+	    }
+
+
+	    public int take(Object[] into){
+	        return take(into, into.length);
+	    }
+
+
+	    public int take(Object[] into, int length){
+	        int intoPos = 0;
+
+	        if(available <= writePos){
+	            int nextPos= writePos - available;
+	            int endPos   = nextPos + Math.min(available, length);
+
+	            for(;nextPos < endPos; nextPos++){
+	                into[intoPos++] = this.elements[nextPos];
+	            }
+	            this.available -= intoPos;
+	            return intoPos;
+	        } else {
+	            int nextPos = writePos - available + capacity;
+
+	            int leftInTop = capacity - nextPos;
+	            if(length <= leftInTop){
+	                //copy directly
+	                for(; intoPos < length; intoPos++){
+	                    into[intoPos] = this.elements[nextPos++];
+	                }
+	                this.available -= length;
+	                return length;
+
+	            } else {
+	                //copy top
+	                for(; nextPos < capacity; nextPos++){
+	                    into[intoPos++] = this.elements[nextPos];
+	                }
+
+	                //copy bottom - from 0 to writePos
+	                nextPos = 0;
+	                int leftToCopy = length - intoPos;
+	                int endPos = Math.min(writePos, leftToCopy);
+
+	                for(;nextPos < endPos; nextPos++){
+	                    into[intoPos++] = this.elements[nextPos];
+	                }
+
+	                this.available -= intoPos;
+
+	                return intoPos;
+	            }
+	        }
+	    }
+	
+/*
+    public static int capacity  = 6;
+    public static int writePos  = 0;
+    public static int available = 0;
+    public static int[] elements= null;
+    
+    //returns remaining number of open buffer spots
+    public static int remainingCapacity() {
+        return capacity - available;
+    }
+    
+    public static void reset() {
+        writePos = 0;
+        available = 0;
+    }
+    
+	
+	//writes ints to buffer without overwriting data and
+    //returns the number of elements written to the buffer
+	public static int write(int[] data){
+		int length=data.length;
+        int readPos = 0;
+        if(writePos > available){
+            //space above writePos is all empty
+
+            if(length <= capacity - writePos){
+                //space above writePos is sufficient to insert batch
+
+                for(;  readPos < length; readPos++){
+                    elements[writePos++] = data[readPos];
+                }
+                available += readPos;
+                return length;
+
+            } else {
+                //both space above writePos and below writePos is necessary to use
+                //to insert batch.
+
+                int lastEmptyPos = writePos - available;
+
+                for(; writePos < capacity; writePos++){
+                    elements[writePos] = data[readPos++];
+                }
+
+                //fill into bottom of array too.
+                writePos = 0;
+
+                int endPos = Math.min(length - readPos, capacity - available - readPos);
+                for(;writePos < endPos; writePos++){
+                    elements[writePos] = data[readPos++];
+                }
+                available += readPos;
+                return readPos;
+            }
+        } else {
+            int endPos = capacity - available + writePos;
+
+            for(; writePos < endPos; writePos++){
+              //  elements[writePos] = data[readPos++];
+            }
+            available += readPos;
+
+            return readPos;
+        }
+		
+	}
+	
+	//returns a single buffered int in FIFO order and 
+	//removes the element from the buffer
+	public static int read(){
+		return 0;
+	}
+	
+	
+	*/
+	
+	
+	
+	public static void main(String[] args) {
+		
+			int test1[]={1,2,3};
+			int test2[]={4,5,6,7,1,4,5,6,7,8};
+			int test3[]={8,9};
+		    System.out.println(put(test1));
+		    System.out.println(write(test2));
+		    System.out.println(write(test3));
+			
+		    System.out.println(read());
+		    System.out.println(read());
+		    System.out.println(read());
+		    System.out.println(read());
+		    System.out.println(read());
+		    System.out.println(read());
+		    System.out.println(read());
+		    System.out.println(read());
+		    System.out.println(read());
+		    
+			
+		   }
+
+}
