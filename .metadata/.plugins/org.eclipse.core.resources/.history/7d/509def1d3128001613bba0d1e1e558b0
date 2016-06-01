@@ -14,25 +14,15 @@ public class Main{
 		
 			int test1[]={1,2,3};
 			int test2[]={4,5,6,7,8,9,10,11,12};
-			int test3[]={13,14,15};
+			int test3[]={13,14};
 			
-/*****************Test Case 1*****************/
-			
-System.out.println("Take in 3 elements and print them back out");
-			
+
 		    System.out.println("Num Elements Read In: "+Buffer.write(test1));
 		    System.out.println(Buffer.read());
 		    System.out.println(Buffer.read());
 		    System.out.println(Buffer.read());
-		    
-/*****************Test Case 2*****************/	
-		  
-		    System.out.println("Try to read empty buffer");
 		    System.out.println(Buffer.read());
 		    
-/*****************Test Case 3*****************/	
-		    
-		    System.out.println("Try to read in array too large for buffer");
 		    System.out.println("Num Elements Read In: "+Buffer.write(test2));
 		    
 		    System.out.println(Buffer.read());
@@ -40,9 +30,7 @@ System.out.println("Take in 3 elements and print them back out");
 		    System.out.println(Buffer.read());
 		    System.out.println(Buffer.read());
 		    
-/*****************Test Case 4*****************/
 		    
-		    System.out.println("Add Elements to non-empty buffer");
 		    System.out.println("Num Elements Read In: "+Buffer.write(test3));
 			
 		    System.out.println(Buffer.read());

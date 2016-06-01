@@ -7,15 +7,15 @@ package mainApp;
 
 public class Buffer {
 	
-	//TO CHANGE BUFFER SIZE EDIT INT[] ELEMENTS; CAPACITY, BOOLEAN[] ISOCCUPIED; AND AVAILABLE//
+	//TO CHANGE BUFFER SIZE EDIT INT[] ELEMENTS; CAPACITY, AND BOOLEAN[] ISOCCUPIED; AND AVAILABLE//
 	   public static int[] elements = {0,0,0,0,0,0};
-	   public static boolean[] isOccupied = {false, false, false, false, false, false};
-	   public static int capacity  = 6;
-	   public static int available = 6;
 
-	  
+	    public static int capacity  = 6;
 	    public static int writePos  = 0;
+	    public static int available = 6;
 	    public static int FIFOPos = 0;
+	    
+	    public static boolean[] isOccupied = {false, false, false, false, false, false};
 	    
 
 	    public static int write(int[] newElements){
