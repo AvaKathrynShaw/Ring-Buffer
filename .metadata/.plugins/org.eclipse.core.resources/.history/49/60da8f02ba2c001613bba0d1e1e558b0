@@ -9,16 +9,14 @@ import java.util.Scanner;
 public class Buffer {
 	
 	//TO CHANGE BUFFER SIZE EDIT INT[] ELEMENTS; CAPACITY, BOOLEAN[] ISOCCUPIED; AND AVAILABLE//
-	   public static int[] elements;
-	   public static boolean[] isOccupied;
+	   public static int[] elements;// = {0,0,0,0,0,0};
+	   public static boolean[] isOccupied;// = {false, false, false, false, false, false};
 	   public static int capacity;
 	   public static int available;
 
 	  
 	    public static int writePos  = 0;
 	    public static int FIFOPos = 0;
-	    
-	    
 	    
 	    public static void initialize(int bufSize){
 	    	
@@ -33,6 +31,8 @@ public class Buffer {
 		   for(int i=0; i<bufSize; i++){
 			   isOccupied[i]=false;
 		   }
+	 	  // elements = new int[bufSize]; //{0,0,0,0,0,0};
+		   //isOccupied = new boolean[bufSize];// {false, false, false, false, false, false};
 	    	
 	    }
 	    
@@ -98,7 +98,7 @@ public class Buffer {
 			
 			int retValue;
 			
-			if(available == capacity){
+			if(available ==6){
 				System.out.print("Null");
 				return 0;
 			}else

@@ -41,7 +41,7 @@ System.out.println("Take in 3 elements and print them back out");
 		    
 /*****************Test Case 3*****************/	
 		    
-		    System.out.println("Try to read in 9 Elements and print out 4");
+		    System.out.println("Try to read in array too large for buffer");
 		    System.out.println("Num Elements Read In: "+Buffer.write(test2));
 		    
 		    System.out.println(Buffer.read());
@@ -51,7 +51,7 @@ System.out.println("Take in 3 elements and print them back out");
 		    
 /*****************Test Case 4*****************/
 		    
-		    System.out.println("Add 3 Elements to non-empty buffer");
+		    System.out.println("Add Elements to non-empty buffer");
 		    System.out.println("Num Elements Read In: "+Buffer.write(test3));
 			
 		    System.out.println(Buffer.read());
